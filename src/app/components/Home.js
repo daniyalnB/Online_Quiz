@@ -3,14 +3,10 @@ import { Resizable, ResizableBox } from "react-resizable";
 import styled from "styled-components";
 import { Rnd } from "react-rnd";
 
-
 const StyledRnd = styled(Rnd)`
   border: 1px solid blue;
 `;
 
-const Item = styled.div`
-  border: 1px solid black;
-`;
 
 const Container = styled.div`
   width: 800px;
@@ -18,35 +14,9 @@ const Container = styled.div`
   border: 1px solid red;
 `;
 
-
 const Home = () => {
 
   const [file, setFile] = useState();
-
-  function handleChange(e) {
-    console.log(e.target.files);
-    setFile(URL.createObjectURL(e.target.files[0]));
-  }
-
-  const [formFields, setFormFields] = useState([]);
-  console.log(formFields, "formFields")
-
-  const [c, setC] = useState(0);
-
-  const handleFormChange = (event) => {
-    console.log(event)
-    const data = [...formFields];
-    data [c][event.target.name] = event.target.files ? URL.createObjectURL(event.target.files[0]) : event.target.value;
-    setFormFields(data);
-    setC(c + 1);
-  };
-
-  const addFields = () => {
-    let object = {
-      image: "",
-    };
-    setFormFields([...formFields, object]);
-  };
 
   const [position, setPosition] = useState({
     x: 0,
@@ -74,6 +44,27 @@ const Home = () => {
     }));
   }
 
+  const [selectedImages, setSelectedImages] = useState([]);
+  console.log(selectedImages, "selectedImages");
+
+  const handleImageChange = (e) => {
+    const files = e.target.files;
+    const selected = [];
+
+    for (let i = 0; i < files.length; i++) {
+      const reader = new FileReader();
+
+      reader.onload = (event) => {
+        selected.push({ file: files[i], src: event.target.result });
+        if (selected.length === files.length) {
+          setSelectedImages(selected);
+        }
+      };
+
+      reader.readAsDataURL(files[i]);
+    }
+  };
+
 
   return (
 		<>
@@ -96,7 +87,7 @@ const Home = () => {
       
 
       <Container>
-        {formFields.map((form, index) => {
+        {selectedImages.map((image, index) => {
           return ( 
             <StyledRnd
               key={index}
@@ -106,31 +97,21 @@ const Home = () => {
               bounds="parent"
               lockAspectRatio={true}
             >
-              <div style={{ backgroundImage: `url(${form.image})`, backgroundSize: "100% 100%",  width: "100%", height: "100%" }}>
+              <div
+                style={{
+                  backgroundImage: `url(${image.src})`,
+                  backgroundSize: "100% 100%",
+                  width: "100%",
+                  height: "100%",
+                }}
+              >
               </div>
             </StyledRnd> 
           );
         })}
         
       </Container>
-
-      {/* <div>
-        <h2>Add Image:</h2>
-          <input type="file" onChange={handleChange} />
-      </div> */}
-
-      <div>
-        <input
-          type="file"
-          name="image"
-          accept="image/png, image/jpg, image/jpeg"
-          onChange={event => {
-            addFields();
-            handleFormChange(event);
-          }}
-          onClick={(e) => (e.target.value = null)}
-        />
-      </div>
+      <input type="file" accept="image/*" multiple onChange={handleImageChange} />
 		</>
 	);
 };
