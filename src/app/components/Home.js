@@ -31,25 +31,21 @@ const Home = () => {
   const [formFields, setFormFields] = useState([]);
   console.log(formFields, "formFields")
 
-  const handleFormChange = (event, index) => {
+  const [c, setC] = useState(0);
+
+  const handleFormChange = (event) => {
+    console.log(event)
     const data = [...formFields];
-    data [index][event.target.name] = event.target.files[0];
+    data [c][event.target.name] = event.target.files ? URL.createObjectURL(event.target.files[0]) : event.target.value;
     setFormFields(data);
+    setC(c + 1);
   };
 
-  const addFields = (event) => {
-    console.log(event)
+  const addFields = () => {
     let object = {
       image: "",
     };
     setFormFields([...formFields, object]);
-    // handleFormChange(event);
-  };
-
-  const removeFields = (index) => {
-    let data = [...formFields];
-    data.splice(index, 1);
-    setFormFields(data);
   };
 
   const [position, setPosition] = useState({
@@ -100,7 +96,7 @@ const Home = () => {
       
 
       <Container>
-        {formFields.map((index) => {
+        {formFields.map((form, index) => {
           return ( 
             <StyledRnd
               key={index}
@@ -110,7 +106,7 @@ const Home = () => {
               bounds="parent"
               lockAspectRatio={true}
             >
-              <div style={{ backgroundImage: `url(${file})`, backgroundSize: "100% 100%",  width: "100%", height: "100%" }}>
+              <div style={{ backgroundImage: `url(${form.image})`, backgroundSize: "100% 100%",  width: "100%", height: "100%" }}>
               </div>
             </StyledRnd> 
           );
@@ -128,7 +124,10 @@ const Home = () => {
           type="file"
           name="image"
           accept="image/png, image/jpg, image/jpeg"
-          onChange={event => addFields(event)}
+          onChange={event => {
+            addFields();
+            handleFormChange(event);
+          }}
           onClick={(e) => (e.target.value = null)}
         />
       </div>
