@@ -7,7 +7,6 @@ const StyledRnd = styled(Rnd)`
   border: 1px solid blue;
 `;
 
-
 const Container = styled.div`
   width: 800px;
   height: 800px;
@@ -27,7 +26,6 @@ const Home = () => {
 
   function onResize(event, direction, ref, delta) {
     const { width, height } = ref.style;
-
     setPosition((prevPosition) => ({
       ...prevPosition,
       width,
@@ -65,7 +63,6 @@ const Home = () => {
     }
   };
 
-
   return (
 		<>
       {/* {file && (
@@ -77,15 +74,14 @@ const Home = () => {
       )}
 
       <ResizableBox width={200} height={200} minConstraints={[100, 100]} maxConstraints={[300, 300]}>
-      <span>Contents</span>
-    </ResizableBox> */}
+        <span>Contents</span>
+      </ResizableBox> */}
 
       {/* <div>
         <h2>Add Image:</h2>
           <input type="file" onChange={handleChange} />
       </div> */}
       
-
       <Container>
         {selectedImages.map((image, index) => {
           return ( 
